@@ -1077,13 +1077,21 @@
             <h3>Circle Positions</h3>
             <p style="font-size:12px; color:var(--text-secondary); margin-bottom:12px">Manually position markers over where monsters appear on your screen.</p>
             <button class="btn" onclick="openCircleSetup()">Configure Circle Positions</button>
-            <button class="btn btn-secondary" onclick="resetCircleSetup()">Reset to Default (1280x720)</button>
+            <div style="display:flex; gap:10px; margin-top:10px">
+                <button class="btn btn-secondary" style="flex:1; margin:0" onclick="exportCircleConfig()">Export Positions JSON</button>
+                <button class="btn btn-secondary" style="flex:1; margin:0" onclick="document.getElementById('circle-config-import-input').click()">Import Positions JSON</button>
+            </div>
+            <input type="file" id="circle-config-import-input" accept=".json,application/json" style="display:none" onchange="importCircleConfig(event)">
+            <button class="btn btn-secondary" style="margin-top:10px" onclick="resetCircleSetup()">Reset to Default (1280x720)</button>
             <button class="btn btn-secondary" style="margin-top:10px; border: 1px solid var(--accent)" onclick="rebuildDictionaryHashes(event)">Rebuild Dictionary Hashes (from current circle positions)</button>
             <p style="font-size:11px; color:var(--text-secondary); margin-top:8px">Recrops and rehashes all entries using original screenshots and current positions.</p>
         </div>
 
         <div class="card">
-            <h3>Firebase Config</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px">
+                <h3 style="margin:0">Firebase Config</h3>
+                <button class="btn btn-secondary" style="width:auto; padding:4px 10px; font-size:12px; margin:0; border-color: rgba(239,68,68,0.4); color: #f87171;" onclick="clearAllFirebaseFields()">Clear All Fields</button>
+            </div>
             <label>API Key</label>
             <input type="text" id="fb-apiKey" placeholder="apiKey">
             <label>Auth Domain</label>
@@ -1096,7 +1104,15 @@
             <input type="text" id="fb-appId" placeholder="appId">
             <label>Firestore Database ID</label>
             <input type="text" id="fb-databaseId" placeholder="ai-studio-48f55087-ae5a-4ab3-b4c4-0a15286e9759">
-            <button class="btn" onclick="saveFirebaseConfig()">Save & Connect</button>
+            <div style="display:flex; gap:10px; margin-bottom:10px">
+                <button class="btn" style="flex:1; margin:0" onclick="saveFirebaseConfig()">Save & Connect</button>
+                <button class="btn btn-secondary" style="flex:1; margin:0; border-color: rgba(239,68,68,0.5); color: #f87171;" onclick="disconnectDatabase()">Disconnect Database</button>
+            </div>
+            <div style="display:flex; gap:10px">
+                <button class="btn btn-secondary" style="flex:1; margin:0" onclick="exportFirebaseConfig()">Export Config</button>
+                <button class="btn btn-secondary" style="flex:1; margin:0" onclick="document.getElementById('fb-config-import-input').click()">Import Config</button>
+            </div>
+            <input type="file" id="fb-config-import-input" accept=".json,application/json" style="display:none" onchange="importFirebaseConfig(event)">
         </div>
 
         <div class="card">
@@ -1153,9 +1169,12 @@
     <div id="setup-overlay">
         <div class="setup-header">
             <h2 style="margin:0">Circle Setup</h2>
-            <div style="display:flex; gap:10px">
-                <button class="btn" style="width:auto; margin:0; background: var(--accent); color: black;" onclick="document.getElementById('setup-upload').click()">Upload Sample Screenshot</button>
-                <button class="btn btn-secondary" style="width:auto; margin:0" onclick="closeCircleSetup()">Cancel</button>
+            <div style="display:flex; gap:8px; flex-wrap:wrap">
+                <button class="btn btn-secondary" style="width:auto; margin:0; padding:6px 12px; font-size:12px" onclick="exportCircleConfig()">Export Config</button>
+                <button class="btn btn-secondary" style="width:auto; margin:0; padding:6px 12px; font-size:12px" onclick="document.getElementById('setup-circle-import-input').click()">Import Config</button>
+                <input type="file" id="setup-circle-import-input" accept=".json,application/json" style="display:none" onchange="importCircleConfig(event)">
+                <button class="btn" style="width:auto; margin:0; padding:6px 12px; font-size:12px; background: var(--accent); color: black;" onclick="document.getElementById('setup-upload').click()">Upload Sample Screenshot</button>
+                <button class="btn btn-secondary" style="width:auto; margin:0; padding:6px 12px; font-size:12px" onclick="closeCircleSetup()">Cancel</button>
             </div>
             <input type="file" id="setup-upload" accept="image/*" style="display:none" onchange="handleSetupUpload(event)">
         </div>
@@ -1215,15 +1234,15 @@
                         <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-bottom:10px">
                             <div class="slider-container" style="margin:0">
                                 <label style="font-size:11px">X Position</label>
-                                <input type="number" id="manual-x" style="width:100%; background:#1a1a1a; border:1px solid #333; color:white; padding:4px; border-radius:4px" oninput="updateManualMarker()">
+                                <input type="number" id="manual-x" step="0.1" style="width:100%; background:#1a1a1a; border:1px solid #333; color:white; padding:4px; border-radius:4px" oninput="updateManualMarker()">
                             </div>
                             <div class="slider-container" style="margin:0">
                                 <label style="font-size:11px">Y Position</label>
-                                <input type="number" id="manual-y" style="width:100%; background:#1a1a1a; border:1px solid #333; color:white; padding:4px; border-radius:4px" oninput="updateManualMarker()">
+                                <input type="number" id="manual-y" step="0.1" style="width:100%; background:#1a1a1a; border:1px solid #333; color:white; padding:4px; border-radius:4px" oninput="updateManualMarker()">
                             </div>
                             <div class="slider-container" style="margin:0">
                                 <label style="font-size:11px">Radius</label>
-                                <input type="number" id="manual-radius" style="width:100%; background:#1a1a1a; border:1px solid #333; color:white; padding:4px; border-radius:4px" oninput="updateManualMarker()">
+                                <input type="number" id="manual-radius" step="0.5" style="width:100%; background:#1a1a1a; border:1px solid #333; color:white; padding:4px; border-radius:4px" oninput="updateManualMarker()">
                             </div>
                         </div>
 
@@ -1479,11 +1498,22 @@
 
             document.getElementById('fb-apiKey').value = localStorage.getItem('fb-apiKey') || '';
             document.getElementById('fb-authDomain').value = localStorage.getItem('fb-authDomain') || '';
-            document.getElementById('fb-projectId').value = localStorage.getItem('fb-projectId') || '';
+            const savedProjectId = localStorage.getItem('fb-projectId') || '';
+            document.getElementById('fb-projectId').value = savedProjectId;
             document.getElementById('fb-storageBucket').value = localStorage.getItem('fb-storageBucket') || '';
             document.getElementById('fb-appId').value = localStorage.getItem('fb-appId') || '';
             const dbIdEl = document.getElementById('fb-databaseId');
-            if (dbIdEl) dbIdEl.value = localStorage.getItem('fb-databaseId') || 'ai-studio-48f55087-ae5a-4ab3-b4c4-0a15286e9759';
+            if (dbIdEl) {
+                let savedDbId = localStorage.getItem('fb-databaseId') || '';
+                if (savedProjectId !== 'gen-lang-client-0408655533' && savedDbId === 'ai-studio-48f55087-ae5a-4ab3-b4c4-0a15286e9759') {
+                    savedDbId = '(default)';
+                    localStorage.setItem('fb-databaseId', '(default)');
+                }
+                if (!savedDbId) {
+                    savedDbId = (savedProjectId === 'gen-lang-client-0408655533') ? 'ai-studio-48f55087-ae5a-4ab3-b4c4-0a15286e9759' : '(default)';
+                }
+                dbIdEl.value = savedDbId;
+            }
             document.getElementById('debug-mode-toggle').checked = localStorage.getItem('debug-mode') === 'true';
             updateDebugPanelVisibility();
         }
@@ -1515,8 +1545,24 @@
 
         // --- Firebase ---
         function getFirestoreInstance(appInstance, databaseId) {
-            const targetId = databaseId || localStorage.getItem('fb-databaseId') || "ai-studio-48f55087-ae5a-4ab3-b4c4-0a15286e9759";
-            if (targetId && appInstance.container && appInstance.container.getProvider) {
+            let targetId = databaseId || localStorage.getItem('fb-databaseId') || '';
+            const projectId = appInstance.options?.projectId || '';
+
+            // 'ai-studio-48f55087-ae5a-4ab3-b4c4-0a15286e9759' is strictly for the provisioned AI Studio cloud project
+            if (!targetId || targetId === 'ai-studio-48f55087-ae5a-4ab3-b4c4-0a15286e9759') {
+                if (projectId === 'gen-lang-client-0408655533') {
+                    targetId = 'ai-studio-48f55087-ae5a-4ab3-b4c4-0a15286e9759';
+                } else {
+                    targetId = '';
+                }
+            }
+
+            // Standard projects or (default) must connect via standard default firestore
+            if (!targetId || targetId === '(default)') {
+                return appInstance.firestore();
+            }
+
+            if (appInstance.container && appInstance.container.getProvider) {
                 try {
                     const provider = appInstance.container.getProvider("firestore");
                     const delegate = provider.getImmediate({ identifier: targetId });
@@ -1526,6 +1572,19 @@
                 }
             }
             return appInstance.firestore();
+        }
+
+        let activeDbListeners = [];
+
+        function clearActiveDbListeners() {
+            if (Array.isArray(activeDbListeners)) {
+                activeDbListeners.forEach(unsub => {
+                    if (typeof unsub === 'function') {
+                        try { unsub(); } catch (e) { console.warn("Error unsubscribing listener:", e); }
+                    }
+                });
+                activeDbListeners = [];
+            }
         }
 
         async function initFirebase() {
@@ -1539,7 +1598,7 @@
             };
 
             // If localStorage missing config, load from firebase-applet-config.json
-            if (!config.apiKey || !config.projectId || !config.firestoreDatabaseId) {
+            if (!config.apiKey || !config.projectId) {
                 try {
                     const res = await fetch('/firebase-applet-config.json');
                     if (res.ok) {
@@ -1550,7 +1609,7 @@
                             projectId: config.projectId || appletConfig.projectId || '',
                             storageBucket: config.storageBucket || appletConfig.storageBucket || '',
                             appId: config.appId || appletConfig.appId || '',
-                            firestoreDatabaseId: config.firestoreDatabaseId || appletConfig.firestoreDatabaseId || 'ai-studio-48f55087-ae5a-4ab3-b4c4-0a15286e9759'
+                            firestoreDatabaseId: config.firestoreDatabaseId || appletConfig.firestoreDatabaseId || ''
                         };
                         if (config.apiKey) localStorage.setItem('fb-apiKey', config.apiKey);
                         if (config.authDomain) localStorage.setItem('fb-authDomain', config.authDomain);
@@ -1560,21 +1619,26 @@
                         if (config.firestoreDatabaseId) localStorage.setItem('fb-databaseId', config.firestoreDatabaseId);
 
                         const apiKeyInput = document.getElementById('fb-apiKey');
-                        if (apiKeyInput && !apiKeyInput.value) apiKeyInput.value = config.apiKey;
+                        if (apiKeyInput) apiKeyInput.value = config.apiKey;
                         const authDomainInput = document.getElementById('fb-authDomain');
-                        if (authDomainInput && !authDomainInput.value) authDomainInput.value = config.authDomain;
+                        if (authDomainInput) authDomainInput.value = config.authDomain;
                         const projectIdInput = document.getElementById('fb-projectId');
-                        if (projectIdInput && !projectIdInput.value) projectIdInput.value = config.projectId;
+                        if (projectIdInput) projectIdInput.value = config.projectId;
                         const storageBucketInput = document.getElementById('fb-storageBucket');
-                        if (storageBucketInput && !storageBucketInput.value) storageBucketInput.value = config.storageBucket;
+                        if (storageBucketInput) storageBucketInput.value = config.storageBucket;
                         const appIdInput = document.getElementById('fb-appId');
-                        if (appIdInput && !appIdInput.value) appIdInput.value = config.appId;
+                        if (appIdInput) appIdInput.value = config.appId;
                         const dbIdInput = document.getElementById('fb-databaseId');
-                        if (dbIdInput && !dbIdInput.value) dbIdInput.value = config.firestoreDatabaseId;
+                        if (dbIdInput) dbIdInput.value = (config.projectId === 'gen-lang-client-0408655533' && config.firestoreDatabaseId) ? config.firestoreDatabaseId : '(default)';
                     }
                 } catch (e) {
                     console.warn("Could not load /firebase-applet-config.json:", e);
                 }
+            }
+
+            if (config.projectId !== 'gen-lang-client-0408655533' && config.firestoreDatabaseId === 'ai-studio-48f55087-ae5a-4ab3-b4c4-0a15286e9759') {
+                config.firestoreDatabaseId = '(default)';
+                localStorage.setItem('fb-databaseId', '(default)');
             }
 
             if (!config.apiKey || !config.projectId) {
@@ -1606,8 +1670,11 @@
                 await db.collection('dictionary').limit(1).get();
                 updateFirebaseStatus('connected', 'Firebase: Connected');
 
+                // Clear any prior listeners before attaching new ones
+                clearActiveDbListeners();
+
                 // 1. Dictionary Sync (Individual Documents)
-                db.collection('dictionary').onSnapshot(snapshot => {
+                const unsubDict = db.collection('dictionary').onSnapshot(snapshot => {
                     const newDict = [];
                     snapshot.forEach(doc => {
                         if (doc.id === 'v1_data') return; // Skip legacy aggregate doc
@@ -1639,6 +1706,7 @@
                     showToast("Dictionary sync error", "error");
                     handleFirestoreError(error, 'list', 'dictionary');
                 });
+                activeDbListeners.push(unsubDict);
 
                 // Migration check (one-time)
                 db.collection('dictionary').doc('v1_data').get().then(async (doc) => {
@@ -1659,7 +1727,7 @@
                 });
 
                 // 2. Gemini Keys sync
-                db.collection('config').doc('geminiKeys').onSnapshot(doc => {
+                const unsubKeys = db.collection('config').doc('geminiKeys').onSnapshot(doc => {
                     if (doc.exists) {
                         geminiKeys = doc.data().keys || [];
                         showToast("Gemini keys synced", "success");
@@ -1671,9 +1739,10 @@
                     showToast("Gemini keys sync error", "error");
                     handleFirestoreError(error, 'get', 'config/geminiKeys');
                 });
+                activeDbListeners.push(unsubKeys);
 
                 // 3. App Settings sync
-                db.collection('config').doc('appSettings').onSnapshot(doc => {
+                const unsubSettings = db.collection('config').doc('appSettings').onSnapshot(doc => {
                     if (doc.exists) {
                         const data = doc.data();
                         console.log("[Firebase] App settings received:", data);
@@ -1701,6 +1770,7 @@
                 }, (error) => {
                     handleFirestoreError(error, 'get', 'config/appSettings');
                 });
+                activeDbListeners.push(unsubSettings);
 
             } catch (e) {
                 console.error("Firebase init error:", e);
@@ -1746,7 +1816,13 @@
             const projectId = document.getElementById('fb-projectId').value.trim();
             const storageBucket = document.getElementById('fb-storageBucket').value.trim();
             const appId = document.getElementById('fb-appId').value.trim();
-            const databaseId = (document.getElementById('fb-databaseId')?.value || '').trim() || localStorage.getItem('fb-databaseId') || 'ai-studio-48f55087-ae5a-4ab3-b4c4-0a15286e9759';
+            let databaseId = (document.getElementById('fb-databaseId')?.value || '').trim();
+            if (!databaseId) {
+                databaseId = (projectId === 'gen-lang-client-0408655533') ? 'ai-studio-48f55087-ae5a-4ab3-b4c4-0a15286e9759' : '(default)';
+            }
+            if (projectId !== 'gen-lang-client-0408655533' && databaseId === 'ai-studio-48f55087-ae5a-4ab3-b4c4-0a15286e9759') {
+                databaseId = '(default)';
+            }
 
             if (!apiKey || !projectId) {
                 alert("API Key and Project ID are required.");
@@ -1758,7 +1834,7 @@
             localStorage.setItem('fb-projectId', projectId);
             localStorage.setItem('fb-storageBucket', storageBucket);
             localStorage.setItem('fb-appId', appId);
-            if (databaseId) localStorage.setItem('fb-databaseId', databaseId);
+            localStorage.setItem('fb-databaseId', databaseId);
             
             updateFirebaseStatus('connecting', 'Firebase: Testing Connection...');
 
@@ -1794,6 +1870,193 @@
                 alert("Firebase connection failed: " + e.message);
                 console.error(e);
             }
+        }
+
+        function exportFirebaseConfig() {
+            const apiKey = (document.getElementById('fb-apiKey')?.value || '').trim() || localStorage.getItem('fb-apiKey') || '';
+            const authDomain = (document.getElementById('fb-authDomain')?.value || '').trim() || localStorage.getItem('fb-authDomain') || '';
+            const projectId = (document.getElementById('fb-projectId')?.value || '').trim() || localStorage.getItem('fb-projectId') || '';
+            const storageBucket = (document.getElementById('fb-storageBucket')?.value || '').trim() || localStorage.getItem('fb-storageBucket') || '';
+            const appId = (document.getElementById('fb-appId')?.value || '').trim() || localStorage.getItem('fb-appId') || '';
+            let firestoreDatabaseId = (document.getElementById('fb-databaseId')?.value || '').trim() || localStorage.getItem('fb-databaseId') || '';
+            if (!firestoreDatabaseId) {
+                firestoreDatabaseId = (projectId === 'gen-lang-client-0408655533') ? 'ai-studio-48f55087-ae5a-4ab3-b4c4-0a15286e9759' : '(default)';
+            }
+
+            if (!apiKey && !projectId) {
+                if (!confirm("Firebase config fields are currently empty. Do you want to export an empty template?")) {
+                    return;
+                }
+            }
+
+            const exportData = {
+                apiKey,
+                authDomain,
+                projectId,
+                storageBucket,
+                appId,
+                firestoreDatabaseId,
+                exportedAt: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `firebase-config-${projectId || 'app'}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("Firebase configuration exported!", "success");
+        }
+
+        async function importFirebaseConfig(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            try {
+                const text = await file.text();
+                const json = JSON.parse(text);
+
+                // Handle direct, nested firebaseConfig, or SDK snippet
+                const cfg = json.firebaseConfig || json.firebase || json;
+
+                const apiKey = (cfg.apiKey || '').trim();
+                const authDomain = (cfg.authDomain || '').trim();
+                const projectId = (cfg.projectId || '').trim();
+                const storageBucket = (cfg.storageBucket || '').trim();
+                const appId = (cfg.appId || '').trim();
+                let firestoreDatabaseId = (cfg.firestoreDatabaseId || cfg.databaseId || cfg.firestoreDbId || '').trim();
+
+                if (!apiKey && !projectId) {
+                    throw new Error("Invalid configuration file. Must contain at least 'apiKey' and 'projectId'.");
+                }
+
+                if (!firestoreDatabaseId) {
+                    firestoreDatabaseId = (projectId === 'gen-lang-client-0408655533') ? 'ai-studio-48f55087-ae5a-4ab3-b4c4-0a15286e9759' : '(default)';
+                }
+
+                // Update input fields
+                const apiKeyInput = document.getElementById('fb-apiKey');
+                if (apiKeyInput) apiKeyInput.value = apiKey;
+                const authDomainInput = document.getElementById('fb-authDomain');
+                if (authDomainInput) authDomainInput.value = authDomain;
+                const projectIdInput = document.getElementById('fb-projectId');
+                if (projectIdInput) projectIdInput.value = projectId;
+                const storageBucketInput = document.getElementById('fb-storageBucket');
+                if (storageBucketInput) storageBucketInput.value = storageBucket;
+                const appIdInput = document.getElementById('fb-appId');
+                if (appIdInput) appIdInput.value = appId;
+                const dbIdInput = document.getElementById('fb-databaseId');
+                if (dbIdInput) dbIdInput.value = firestoreDatabaseId;
+
+                // Save to localStorage
+                localStorage.setItem('fb-apiKey', apiKey);
+                localStorage.setItem('fb-authDomain', authDomain);
+                localStorage.setItem('fb-projectId', projectId);
+                localStorage.setItem('fb-storageBucket', storageBucket);
+                localStorage.setItem('fb-appId', appId);
+                localStorage.setItem('fb-databaseId', firestoreDatabaseId);
+
+                showToast("Firebase configuration imported!", "success");
+                if (confirm("Firebase configuration imported successfully! Connect to Firebase now?")) {
+                    await saveFirebaseConfig();
+                }
+            } catch (err) {
+                console.error("Firebase config import error:", err);
+                alert("Failed to import Firebase config: " + err.message);
+                showToast("Import failed: " + err.message, "error");
+            } finally {
+                event.target.value = '';
+            }
+        }
+
+        async function clearAllFirebaseFields() {
+            if (!confirm("Are you sure you want to clear all Firebase configuration fields and disconnect?")) return;
+
+            // Clear inputs
+            const apiKeyInput = document.getElementById('fb-apiKey');
+            if (apiKeyInput) apiKeyInput.value = '';
+            const authDomainInput = document.getElementById('fb-authDomain');
+            if (authDomainInput) authDomainInput.value = '';
+            const projectIdInput = document.getElementById('fb-projectId');
+            if (projectIdInput) projectIdInput.value = '';
+            const storageBucketInput = document.getElementById('fb-storageBucket');
+            if (storageBucketInput) storageBucketInput.value = '';
+            const appIdInput = document.getElementById('fb-appId');
+            if (appIdInput) appIdInput.value = '';
+            const dbIdInput = document.getElementById('fb-databaseId');
+            if (dbIdInput) dbIdInput.value = '';
+
+            // Clear localStorage
+            localStorage.removeItem('fb-apiKey');
+            localStorage.removeItem('fb-authDomain');
+            localStorage.removeItem('fb-projectId');
+            localStorage.removeItem('fb-storageBucket');
+            localStorage.removeItem('fb-appId');
+            localStorage.removeItem('fb-databaseId');
+
+            // Disconnect Firebase instance
+            clearActiveDbListeners();
+            try {
+                if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
+                    await Promise.all(firebase.apps.map(app => app.delete()));
+                }
+            } catch (e) {
+                console.warn("Notice while deleting apps during clear:", e);
+            }
+            db = null;
+            storage = null;
+            firebaseApp = null;
+
+            // Clear entry list and cache
+            dictionary = [];
+            localStorage.removeItem('dictionary_cache');
+            renderDictionary();
+            if (typeof renderDictPreview === 'function') renderDictPreview();
+            if (typeof closeVariantsPanel === 'function') closeVariantsPanel();
+
+            updateFirebaseStatus('disconnected', 'Firebase: Disconnected (Fields Cleared)');
+            showToast("All Firebase fields cleared and disconnected", "info");
+            alert("All Firebase fields have been cleared and the database has been disconnected.");
+        }
+
+        async function disconnectDatabase() {
+            if (!confirm("Are you sure you want to disconnect from the database? This will disconnect Firebase and clear the loaded dictionary entry list.")) {
+                return;
+            }
+
+            // 1. Unsubscribe from all active Firestore snapshot listeners
+            clearActiveDbListeners();
+
+            // 2. Terminate and delete Firebase app instances
+            try {
+                if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
+                    await Promise.all(firebase.apps.map(app => app.delete()));
+                }
+            } catch (e) {
+                console.warn("Notice while deleting apps during disconnect:", e);
+            }
+            db = null;
+            storage = null;
+            firebaseApp = null;
+
+            // 3. Clear dictionary entry list and local cache
+            dictionary = [];
+            localStorage.removeItem('dictionary_cache');
+            renderDictionary();
+            if (typeof renderDictPreview === 'function') {
+                renderDictPreview();
+            }
+            if (typeof closeVariantsPanel === 'function') {
+                closeVariantsPanel();
+            }
+
+            // 4. Update status indicator
+            updateFirebaseStatus('disconnected', 'Firebase: Disconnected');
+            showToast("Database disconnected. Entry list cleared.", "info");
+            alert("Database disconnected successfully. The entry list has been cleared.");
         }
 
         async function addGeminiKey() {
@@ -2271,6 +2534,12 @@
             });
         }
 
+        function formatCoord(num) {
+            if (num === undefined || num === null || isNaN(num)) return 0;
+            const n = Number(num);
+            return Number(n.toFixed(2));
+        }
+
         let activeMarkerType = null;
         let activeMarkerIndex = null;
 
@@ -2294,9 +2563,9 @@
             // Update manual panel
             document.getElementById('manual-setup-panel').classList.remove('hidden');
             document.getElementById('active-marker-select').value = id;
-            document.getElementById('manual-x').value = Math.round(marker.x);
-            document.getElementById('manual-y').value = Math.round(marker.y);
-            document.getElementById('manual-radius').value = Math.round(marker.radius);
+            document.getElementById('manual-x').value = formatCoord(marker.x);
+            document.getElementById('manual-y').value = formatCoord(marker.y);
+            document.getElementById('manual-radius').value = formatCoord(marker.radius);
 
             renderSetupMarkers();
             updateSetupCropPreview();
@@ -2320,9 +2589,9 @@
             
             const marker = circleConfig[type + 's'][index];
             document.getElementById('manual-setup-panel').classList.remove('hidden');
-            document.getElementById('manual-x').value = Math.round(marker.x);
-            document.getElementById('manual-y').value = Math.round(marker.y);
-            document.getElementById('manual-radius').value = Math.round(marker.radius);
+            document.getElementById('manual-x').value = formatCoord(marker.x);
+            document.getElementById('manual-y').value = formatCoord(marker.y);
+            document.getElementById('manual-radius').value = formatCoord(marker.radius);
             
             renderSetupMarkers();
             updateSetupCropPreview();
@@ -2352,13 +2621,13 @@
             if (!activeMarker) return;
             const step = parseFloat(document.getElementById('manual-step').value) || 1;
             const marker = circleConfig[activeMarkerType + 's'][activeMarkerIndex];
-            marker.x += dx * step;
-            marker.y += dy * step;
+            marker.x = formatCoord(marker.x + dx * step);
+            marker.y = formatCoord(marker.y + dy * step);
             
             clampMarker(marker);
             
-            document.getElementById('manual-x').value = Math.round(marker.x);
-            document.getElementById('manual-y').value = Math.round(marker.y);
+            document.getElementById('manual-x').value = formatCoord(marker.x);
+            document.getElementById('manual-y').value = formatCoord(marker.y);
             
             renderSetupMarkers();
             updateSetupCropPreview();
@@ -2381,14 +2650,14 @@
             const dy = (clientY - dragStartY) / scaleY;
 
             const marker = circleConfig[activeMarkerType + 's'][activeMarkerIndex];
-            marker.x = markerStartX + dx;
-            marker.y = markerStartY + dy;
+            marker.x = formatCoord(markerStartX + dx);
+            marker.y = formatCoord(markerStartY + dy);
 
             clampMarker(marker);
 
             // Update manual inputs
-            document.getElementById('manual-x').value = Math.round(marker.x);
-            document.getElementById('manual-y').value = Math.round(marker.y);
+            document.getElementById('manual-x').value = formatCoord(marker.x);
+            document.getElementById('manual-y').value = formatCoord(marker.y);
 
             renderSetupMarkers();
             updateSetupCropPreview();
@@ -2411,8 +2680,8 @@
             clampMarker(marker);
             
             // Update inputs if they were clamped
-            document.getElementById('manual-x').value = Math.round(marker.x);
-            document.getElementById('manual-y').value = Math.round(marker.y);
+            document.getElementById('manual-x').value = formatCoord(marker.x);
+            document.getElementById('manual-y').value = formatCoord(marker.y);
 
             renderSetupMarkers();
             updateSetupCropPreview();
@@ -2477,6 +2746,156 @@
             document.getElementById('active-marker-select').value = "";
             document.getElementById('manual-setup-panel').classList.add('hidden');
             renderPreviewCircles();
+        }
+
+        function exportCircleConfig() {
+            const dataToExport = {
+                format: "monster-quiz-circle-config",
+                version: 1,
+                exportedAt: new Date().toISOString(),
+                circleConfig: {
+                    targets: circleConfig.targets.map((t, i) => ({
+                        id: t.id || `T${i + 1}`,
+                        x: typeof t.x === 'number' ? t.x : parseFloat(t.x),
+                        y: typeof t.y === 'number' ? t.y : parseFloat(t.y),
+                        radius: typeof t.radius === 'number' ? t.radius : parseFloat(t.radius)
+                    })),
+                    answers: circleConfig.answers.map((a, i) => ({
+                        id: a.id || `A${i + 1}`,
+                        x: typeof a.x === 'number' ? a.x : parseFloat(a.x),
+                        y: typeof a.y === 'number' ? a.y : parseFloat(a.y),
+                        radius: typeof a.radius === 'number' ? a.radius : parseFloat(a.radius)
+                    }))
+                }
+            };
+            const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `circle-positions-${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("Circle configuration exported!", "success");
+        }
+
+        async function importCircleConfig(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            try {
+                const text = await file.text();
+                const json = JSON.parse(text);
+
+                let targets = null;
+                let answers = null;
+
+                if (json.circleConfig && Array.isArray(json.circleConfig.targets) && Array.isArray(json.circleConfig.answers)) {
+                    targets = json.circleConfig.targets;
+                    answers = json.circleConfig.answers;
+                } else if (Array.isArray(json.targets) && Array.isArray(json.answers)) {
+                    targets = json.targets;
+                    answers = json.answers;
+                } else {
+                    throw new Error("Invalid circle configuration format. The file must conform to 'monster-quiz-circle-config' with targets and answers arrays.");
+                }
+
+                if (targets.length === 0 || answers.length === 0) {
+                    throw new Error("Targets or answers list in circle configuration is empty.");
+                }
+
+                // Preserve exact floating point coordinates as specified in file without integer rounding
+                const parsedTargets = targets.map((t, i) => {
+                    const x = Number(t.x);
+                    const y = Number(t.y);
+                    const radius = Number(t.radius !== undefined ? t.radius : 48);
+                    if (isNaN(x) || isNaN(y) || isNaN(radius)) {
+                        throw new Error(`Target ${t.id || (i+1)} has invalid coordinates.`);
+                    }
+                    return {
+                        id: t.id || `T${i + 1}`,
+                        x,
+                        y,
+                        radius
+                    };
+                });
+
+                const parsedAnswers = answers.map((a, i) => {
+                    const x = Number(a.x);
+                    const y = Number(a.y);
+                    const radius = Number(a.radius !== undefined ? a.radius : 48);
+                    if (isNaN(x) || isNaN(y) || isNaN(radius)) {
+                        throw new Error(`Answer ${a.id || (i+1)} has invalid coordinates.`);
+                    }
+                    return {
+                        id: a.id || `A${i + 1}`,
+                        x,
+                        y,
+                        radius
+                    };
+                });
+
+                circleConfig = {
+                    targets: parsedTargets,
+                    answers: parsedAnswers
+                };
+
+                localStorage.setItem('circlePositions', JSON.stringify(circleConfig));
+
+                // Sync UI sliders and radius indicators
+                const tRad = circleConfig.targets[0]?.radius || 48;
+                const aRad = circleConfig.answers[0]?.radius || 48;
+                const tSlider = document.getElementById('target-radius-slider');
+                if (tSlider) {
+                    tSlider.value = tRad;
+                    const tVal = document.getElementById('target-radius-val');
+                    if (tVal) tVal.innerText = tRad;
+                }
+                const aSlider = document.getElementById('answer-radius-slider');
+                if (aSlider) {
+                    aSlider.value = aRad;
+                    const aVal = document.getElementById('answer-radius-val');
+                    if (aVal) aVal.innerText = aRad;
+                }
+
+                // Update manual inputs if an active marker is selected
+                if (activeMarker) {
+                    const type = activeMarker.startsWith('T') ? 'target' : 'answer';
+                    const index = parseInt(activeMarker.substring(1)) - 1;
+                    const marker = circleConfig[type + 's']?.[index];
+                    if (marker) {
+                        const mx = document.getElementById('manual-x');
+                        const my = document.getElementById('manual-y');
+                        const mr = document.getElementById('manual-radius');
+                        if (mx) mx.value = formatCoord(marker.x);
+                        if (my) my.value = formatCoord(marker.y);
+                        if (mr) mr.value = formatCoord(marker.radius);
+                    }
+                }
+
+                // Refresh overlays and canvas previews
+                if (document.getElementById('setup-overlay') && document.getElementById('setup-overlay').style.display === 'flex') {
+                    renderSetupMarkers();
+                    if (typeof updateSetupCropPreview === 'function') updateSetupCropPreview();
+                }
+                renderPreviewCircles();
+                renderDictPreview();
+
+                // Sync settings to Firebase if connected
+                if (typeof syncSettingsToFirebase === 'function') {
+                    await syncSettingsToFirebase();
+                }
+
+                showToast("Circle positions imported successfully!", "success");
+                alert(`Circle positions successfully imported with exact coordinates!\nTargets: ${parsedTargets.length} circles\nAnswers: ${parsedAnswers.length} circles`);
+            } catch (err) {
+                console.error("Circle config import error:", err);
+                alert("Failed to import circle config: " + err.message);
+                showToast("Import failed: " + err.message, "error");
+            } finally {
+                event.target.value = '';
+            }
         }
 
         async function computePHash(dataUrl) {
